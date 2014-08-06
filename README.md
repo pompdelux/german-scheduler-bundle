@@ -9,7 +9,8 @@ To use this bundle, you need to have:
 
 1. a running [Gearman](http://gearman.org/) server
 2. php Gearman [extension](http://pecl.php.net/package/gearman) installed
-3. and the [GearmanBundle](https://github.com/mmoreram/GearmanBundle/) setup
+3. the [GearmanBundle](https://github.com/mmoreram/GearmanBundle/)
+4. you also need to configure a redis backend for storing schedule data, see step 4 in the install guide.
 
 
 ## Install
@@ -48,7 +49,7 @@ To use this bundle, you need to have:
         // app/config.yml
         php_resque:
             class:
-                bernard:
+                gearman_schedule:
                     host:     %redis_host%
                     port:     %redis_port%
                     prefix:   %redis_prefix%
@@ -72,4 +73,39 @@ $container->get('pdl.gearman_scheduler.scheduler')->enqueueIn(30, $job);
 // enqueue at 2pm
 $container->get('pdl.gearman_scheduler.scheduler')->enqueueAt(new \DateTime('2 pm'), $job);
 
+```
+
+
+## Running the consumer
+
+To consume scheduled jobs, you need to run a consumer.
+
+Here you have two options:
+
+1. Add a cronjob to run with the desired interval
+
+		// run consumer once pr minute
+		* * * * * /usr/bin/php /path/to/console --env=prod gearman:scheduler:consume
+2. Use [supervisord](http://supervisord.org/) to run the consumer
+
+		// starting via supervisord, here set to run with a 30 second interval
+		[program:gearman_scheduler]
+		/usr/bin/php /path/to/console --env=prod gearman:scheduler:consume --interval=30
+
+
+## supervisord
+
+Here is an example of running the scheduler and gearman workers together via supervisord.
+
+```ini
+[program:myapp_gearman_scheduler]
+/usr/bin/php /path/to/console --env=prod gearman:scheduler:consume --interval=30
+stopsignal=QUIT
+
+[program:myapp_gearman_worker]
+/usr/bin/php /path/to/console --env=prod gearman:worker:execute YourGearmanBundleWorker --no-interaction
+stopsignal=QUIT
+
+[group:myapp]
+programs=myapp_gearman_scheduler,myapp_gearman_worker
 ```
