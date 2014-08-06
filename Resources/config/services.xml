@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="pdl.gearman_scheduler.scheduler.class">Pompdelux\GearmanSchedulerBundle\Scheduler</parameter>
+        <parameter key="pdl.gearman_scheduler.consumer.class">Pompdelux\GearmanSchedulerBundle\Consumer</parameter>
+    </parameters>
+
+    <services>
+        <service id="pdl.gearman_scheduler.scheduler" class="%pdl.gearman_scheduler.scheduler.class%">
+            <argument type="service" id="redis.gearman_schedule" />
+            <argument type="service" id="logger" on-invalid="null" />
+        </service>
+        <service id="pdl.gearman_scheduler.consumer" class="%pdl.gearman_scheduler.consumer.class%">
+            <argument type="service" id="pdl.phpredis.gearman_schedule" />
+            <argument type="service" id="gearman" />
+            <argument type="service" id="logger" on-invalid="null" />
+        </service>
+    </services>
+</container>

@@ -1,0 +1,28 @@
+{
+    "name": "pompdelux/german-scheduler-bundle",
+    "type": "symfony-bundle",
+    "description": "Adds scheduling to GearmanBundle for symfony.",
+    "keywords": ["gearman", "scheduler", "symfony"],
+    "homepage": "https://github.com/pompdelux/gearman-scheduler-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ulrik Nielsen",
+            "email": "un@bellcom.dk"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/pompdelux/gearman-scheduler-bundle/issues"
+    },
+    "require": {
+        "mmoreram/gearman-bundle": "dev-master",
+        "php": ">=5.5",
+        "ext-redis": "2.2.*",
+        "ext-gearman": "1.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pompdelux\\GearmanSchedulerBundle\\": ""
+        }
+    }
+}
