@@ -90,7 +90,8 @@ Here you have two options:
 
 		// starting via supervisord, here set to run with a 30 second interval
 		[program:gearman_scheduler]
-		/usr/bin/php /path/to/console --env=prod gearman:scheduler:consume --interval=30
+		command = /usr/bin/php /path/to/console --env=prod gearman:scheduler:consume --interval=30
+		stopsignal=QUIT
 
 
 ## supervisord
@@ -99,11 +100,11 @@ Here is an example of running the scheduler and gearman workers together via sup
 
 ```ini
 [program:myapp_gearman_scheduler]
-/usr/bin/php /path/to/console --env=prod gearman:scheduler:consume --interval=30
+command = /usr/bin/php /path/to/console --env=prod gearman:scheduler:consume --interval=30
 stopsignal=QUIT
 
 [program:myapp_gearman_worker]
-/usr/bin/php /path/to/console --env=prod gearman:worker:execute YourGearmanBundleWorker --no-interaction
+command = /usr/bin/php /path/to/console --env=prod gearman:worker:execute YourGearmanBundleWorker --no-interaction
 stopsignal=QUIT
 
 [group:myapp]
